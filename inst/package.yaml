@@ -26,7 +26,7 @@ library:
   source-dirs: src
 
 executables:
-  inst:
+  arca:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -39,6 +39,10 @@ executables:
     - tar
     - conduit
     - http-conduit
+    - http-client
+    - text
+    - zlib
+    - bytestring
 
 tests:
   inst-test:
