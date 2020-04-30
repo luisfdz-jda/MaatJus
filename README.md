@@ -1,2 +1,2 @@
 # Plataforma de acceso a RCJA
-Version 1
+Versión 1
