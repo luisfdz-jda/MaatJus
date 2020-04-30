@@ -1,7 +1,7 @@
-![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/MaatJus.ico)
+![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/MaatJus.png)
 
 # Maat Jus
 
-Mecanismo Andalúz de Acceso al Teletrabajo - Versión 1
+**M**ecanismo **A**ndalúz de **A**cceso al **T**eletrabajo - Versión 1
 
-Descargar release: [a link](https://github.com/luisfdz-jda/MaatJus/releases)
+Descargar release: [https://github.com/luisfdz-jda/MaatJus/releases](https://github.com/luisfdz-jda/MaatJus/releases)
