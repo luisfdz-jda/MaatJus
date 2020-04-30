@@ -1,4 +1,2 @@
-# Maat Jus
-Mecanismo Andalúz de Acceso al Teletrabajo
-![alt text](http://url/to/img.png)
-Versión 1
+# ![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/MaatJus.ico) Maat Jus
+Mecanismo Andalúz de Acceso al Teletrabajo - Versión 1
