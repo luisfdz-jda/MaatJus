@@ -16,6 +16,8 @@
 !LICENSE
 !*.cabal
 !.gitignore
+!MaatJus.png
+!MaatJus.ico
 
 # except except for...
 inst/.stack-work/*
