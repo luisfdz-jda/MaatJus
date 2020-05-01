@@ -18,6 +18,7 @@
 !.gitignore
 !MaatJus.png
 !MaatJus.ico
+!version.txt
 
 # except except for...
 launcher/.stack-work/*

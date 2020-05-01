@@ -30,6 +30,12 @@ slax appData = do
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/slax.iso" $ appData ++ "\\slax.iso"
   pure ()
 
+quemuLauncher :: FilePath -> IO ()
+quemuLauncher appPath = do
+  download "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/qemu_launcher.bat" $ appPath ++ "\\qemu\\qemu_launcher.bat "
+  pure ()
+
+
 download :: Request -> FilePath -> IO ()
 download source destination = do
   runConduitRes $ httpSource source getResponseBody .| sinkFile destination
@@ -51,8 +57,8 @@ install = do
   appData <- env "APPDATA"
   -- haxm tempPath appPath
   -- qemu tempPath appPath
-  slax appData
-  -- quemuLauncher appPath
+  -- slax appData
+  quemuLauncher appPath
 
 launch :: IO ()
 launch = do
@@ -70,5 +76,5 @@ main = do
   initialMsg
   putStrLn "Descargando e instalando nueva release"
   putStrLn "Puede tardar varios minutos (no interrumpa el proceso). Por favor, espere..."
-  -- install
+  install
   launch

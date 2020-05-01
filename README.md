@@ -2,6 +2,7 @@
 
 # [Maat Jus](https://es.wikipedia.org/wiki/Maat)
 
-**M**ecanismo **A**ndaluz de **A**cceso al **T**eletrabajo - Versión 1
+**M**ecanismo **A**ndaluz de **A**cceso al **T**eletrabajo
 
-Descargar release: [https://github.com/luisfdz-jda/MaatJus/releases](https://github.com/luisfdz-jda/MaatJus/releases)
+Descargar: [https://github.com/luisfdz-jda/MaatJus/releases](https://github.com/luisfdz-jda/MaatJus/releases)
+
