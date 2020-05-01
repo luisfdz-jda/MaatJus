@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a074b6ef46e4ed45ec907e61a775fe80dd1e474bc01ca9adfd0a843381c73226
+-- hash: b102f97a67574b7bfa8d29837fca37db83361f6754e6efb4fbd86f5b8e0fbb7a
 
 name:           maat
 version:        1.0.0.0
@@ -45,6 +45,7 @@ executable maat
       base >=4.7 && <5
     , bytestring
     , conduit
+    , directory
     , http-client
     , http-conduit
     , maat
