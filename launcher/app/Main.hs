@@ -2,7 +2,7 @@
 
 module Main where
 
-import Turtle (shell, echo, empty, need, mv)
+import Turtle (shell, echo, empty, need, mv, mktree, decodeString)
 import qualified Codec.Archive.Tar as Tar
 import Network.HTTP.Simple (httpSource, getResponseBody)
 import Network.HTTP.Client (Request)
@@ -12,50 +12,63 @@ import Data.Maybe (fromMaybe)
 import qualified Codec.Compression.GZip as GZip
 import qualified Data.ByteString.Lazy as BS
 
-type Filename = String
-type Filepath = String
-
-installHax :: IO ()
-installHax = do
-  shell "%TEMP%\\haxm.1\\haxm-windows_v7_6_1\\intelhaxm-android.exe -f %TEMP%\\intel\\HAXM\\7.6.1\\silent -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1" empty
+haxm :: FilePath -> FilePath -> IO ()
+haxm tempPath appPath = do
+  download "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/haxm.tgz" $ tempPath ++ "\\haxm.tgz"
+  Tar.unpack tempPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\haxm.tgz")
+  shell (T.pack $ concat [tempPath, "\\haxm\\intelhaxm-android.exe -f ", appPath, "\\haxm -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1"]) empty
   pure ()
 
-installQemu :: Filepath -> Filepath -> IO ()
-installQemu sourcePath destPath = do
-  -- mv (sourcePath ++ "\\qemu.1") (destPath ++ "\\qemu.1") 
-  mv sourcePath destPath 
+qemu :: FilePath -> FilePath -> IO ()
+qemu tempPath appPath = do
+  download "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/qemu.tgz" $ tempPath ++ "\\qemu.tgz"
+  Tar.unpack appPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\qemu.tgz")
   pure ()
 
-untar :: Filepath -> IO ()
-untar path = do
-  -- Tar.extract (path ++ "\\haxm.1") (path ++ "\\haxm.1.tar.gz")
-  Tar.unpack (path ++ "\\haxm.1") . Tar.read . GZip.decompress =<< BS.readFile (path ++ "\\haxm.1.tar.gz")
-  Tar.unpack (path ++ "\\qemu.1") . Tar.read . GZip.decompress =<< BS.readFile (path ++ "\\qemu.1.tar.gz")
+slax :: FilePath -> IO ()
+slax appData = do
+  download "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/slax.iso" $ appData ++ "\\slax.iso"
   pure ()
 
-downloads :: Filepath -> IO ()
-downloads path = do
-  download "https://github.com/luisfdz-jda/arca/releases/download/arca1/haxm.1.tar.gz" $ path ++ "\\haxm.1.tar.gz"
-  download "https://github.com/luisfdz-jda/arca/releases/download/arca1/qemu.1.tar.gz" $ path ++ "\\qemu.1.tar.gz"
-  -- download "https://github.com/luisfdz-jda/arca/releases/download/arca1/slax.1.tar.gz" $ path ++ "\\slax.1.tar.gz"
-
-download :: Request -> Filepath -> IO ()
+download :: Request -> FilePath -> IO ()
 download source destination = do
   runConduitRes $ httpSource source getResponseBody .| sinkFile destination
 
-env :: String -> IO String
+env :: T.Text -> IO String
 env variable = do
-  tempPath <- need "TMP"
+  tempPath <- need variable
   pure $ fromMaybe "." (fmap T.unpack tempPath)
+
+initialMsg :: IO ()
+initialMsg = do
+  putStrLn "Maat Jus - Mecanismo Andaluz de Acceso al Teletrabajo"
+  putStrLn "Consejería de Turismo, Regeneración, Justicia y Administración Local"
+
+install :: IO ()
+install = do
+  tempPath <- env "TEMP"
+  appPath <- env "LOCALAPPDATA"
+  appData <- env "APPDATA"
+  -- haxm tempPath appPath
+  -- qemu tempPath appPath
+  slax appData
+  -- quemuLauncher appPath
+
+launch :: IO ()
+launch = do
+  appPath <- fmap T.pack $ env "LOCALAPPDATA"
+  appData <- fmap T.pack $ env "APPDATA"
+  shell (T.intercalate "" [ appPath, "\\qemu\\qemu_launcher.bat "
+                          , appPath, "\\qemu\\qemu-system-x86_64w "
+                          , appData, "\\slax.iso" ]
+        )
+        empty
+  pure ()
 
 main :: IO ()
 main = do
-  tempPath <- env "TMP"
-  appPath <- env "LOCALAPPDATA"
-  putStrLn "Descargando release..."
-  downloads tempPath
-  putStrLn "Descomprimiendo..."
-  untar tempPath
-  putStrLn "Instalando..."
-  installHax
-  installQemu tempPath appPath
+  initialMsg
+  putStrLn "Descargando e instalando nueva release"
+  putStrLn "Puede tardar varios minutos (no interrumpa el proceso). Por favor, espere..."
+  -- install
+  launch

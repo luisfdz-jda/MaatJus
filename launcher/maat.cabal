@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 42b419d031c4444501e7ddccfb5fc810dd5c15a6fca52d0422e6e74f597296fc
+-- hash: a074b6ef46e4ed45ec907e61a775fe80dd1e474bc01ca9adfd0a843381c73226
 
-name:           inst
-version:        0.1.0.0
+name:           maat
+version:        1.0.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/inst#readme>
 homepage:       https://github.com/githubuser/inst#readme
 bug-reports:    https://github.com/githubuser/inst/issues
@@ -27,17 +27,17 @@ source-repository head
 
 library
   other-modules:
-      Paths_inst
+      Paths_maat
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
   default-language: Haskell2010
 
-executable arca
+executable maat
   main-is: Main.hs
   other-modules:
-      Paths_inst
+      Paths_maat
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -47,22 +47,22 @@ executable arca
     , conduit
     , http-client
     , http-conduit
-    , inst
+    , maat
     , tar
     , text
     , turtle
     , zlib
   default-language: Haskell2010
 
-test-suite inst-test
+test-suite maat-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_inst
+      Paths_maat
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , inst
+    , maat
   default-language: Haskell2010
