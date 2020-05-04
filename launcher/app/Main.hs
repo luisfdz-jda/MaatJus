@@ -5,7 +5,7 @@ module Main where
 import Turtle (shell, echo, empty, need, mv, mktree, decodeString)
 import qualified Codec.Archive.Tar as Tar
 import Network.HTTP.Simple (httpSource, getResponseBody)
-import Network.HTTP.Client (Request)
+import Network.HTTP.Client (Request, parseRequest)
 import Conduit
 import qualified Data.Text as T
 import Data.Maybe (fromMaybe)
@@ -16,27 +16,38 @@ import System.Directory (doesFileExist)
 
 newtype Version = Version Int
 
+instance Show Version where
+  show (Version v) = show v
+
 haxm :: Version -> FilePath -> FilePath -> IO ()
-haxm (Version v) tempPath appPath = do
-  download ("https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/haxm.tgz") $ tempPath ++ "\\haxm.tgz"
+haxm (Version v) tempPath appData = do
+  putStrLn "Descargando e instalando haxm..."
+  request  <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/haxm.tgz"
+  download request (tempPath ++ "\\haxm.tgz")
   Tar.unpack tempPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\haxm.tgz")
-  shell (T.pack $ concat [tempPath, "\\haxm\\intelhaxm-android.exe -f ", appPath, "\\haxm -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1"]) empty
+  shell (T.pack $ concat [tempPath, "\\haxm\\intelhaxm-android.exe -f ", appData, "\\haxm -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1"]) empty
   pure ()
 
 qemu :: Version -> FilePath -> FilePath -> IO ()
-qemu (Version v) tempPath appPath = do
-  download ("https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu.tgz") $ tempPath ++ "\\qemu.tgz"
-  Tar.unpack appPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\qemu.tgz")
+qemu (Version v) tempPath appData = do
+  putStrLn "Descargando e instalando qemu..."
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu.tgz"
+  download  request (tempPath ++ "\\qemu.tgz")
+  Tar.unpack appData . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\qemu.tgz")
   pure ()
 
 slax :: Version -> FilePath -> IO ()
 slax (Version v) appData = do
-  download ("https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/slax.iso") $ appData ++ "\\slax.iso"
+  putStrLn "Descargando slax..."
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/slax.iso"
+  download request (appData ++ "\\slax.iso")
   pure ()
 
 quemuLauncher :: Version -> FilePath -> IO ()
-quemuLauncher (Version v) appPath = do
-  download ("https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu_launcher.bat") $ appPath ++ "\\qemu\\qemu_launcher.bat "
+quemuLauncher (Version v) appData = do
+  putStrLn "Instalando qemu_launcher..."
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu_launcher.bat"
+  download request (appData ++ "\\qemu\\qemu_launcher.bat")
   pure ()
 
 
@@ -52,32 +63,30 @@ env variable = do
 
 initialMsg :: IO ()
 initialMsg = do
-  putStrLn "Maat Jus - Mecanismo Andaluz de Acceso al Teletrabajo"
+  putStrLn "Maat Jus - Mecanismo andaluz de acceso al teletrabajo"
   putStrLn "Consejería de Turismo, Regeneración, Justicia y Administración Local"
 
 setInstalledVersion :: Version -> IO ()
 setInstalledVersion (Version v) = do
-  appData <- env "APPDATA"
+  appData <- env "LOCALAPPDATA"
   let installedVersionFilename = appData ++ "\\maat_installed_version.txt"
   writeFile installedVersionFilename (show v)
 
 install :: Version -> IO ()
 install v = do
   tempPath <- env "TEMP"
-  appPath <- env "LOCALAPPDATA"
-  appData <- env "APPDATA"
-  haxm v tempPath appPath
-  qemu v tempPath appPath
+  appData <- env "LOCALAPPDATA"
+  haxm v tempPath appData
+  qemu v tempPath appData
   slax v appData
-  quemuLauncher v appPath
+  quemuLauncher v appData
   setInstalledVersion v
 
 launch :: IO ()
 launch = do
-  appPath <- fmap T.pack $ env "LOCALAPPDATA"
-  appData <- fmap T.pack $ env "APPDATA"
-  shell (T.intercalate "" [ appPath, "\\qemu\\qemu_launcher.bat "
-                          , appPath, "\\qemu\\qemu-system-x86_64w "
+  appData <- fmap T.pack $ env "LOCALAPPDATA"
+  shell (T.intercalate "" [ appData, "\\qemu\\qemu_launcher.bat "
+                          , appData, "\\qemu\\qemu-system-x86_64w "
                           , appData, "\\slax.iso" ]
         )
         empty
@@ -85,7 +94,7 @@ launch = do
 
 currentVersion :: IO Int
 currentVersion = do
-  appData <- env "APPDATA"
+  appData <- env "LOCALAPPDATA"
   let currentVersionFilename = appData ++ "\\maat_current_version.txt"
   runConduitRes $ httpSource "https://raw.githubusercontent.com/luisfdz-jda/MaatJus/master/version.txt" getResponseBody .| sinkFile currentVersionFilename
   content <- readFile currentVersionFilename
@@ -93,7 +102,7 @@ currentVersion = do
 
 installedVersion :: IO (Maybe Int)
 installedVersion = do
-  appData <- env "APPDATA"
+  appData <- env "LOCALAPPDATA"
   let installedVersionFilename = appData ++ "\\maat_installed_version.txt"
   e <- doesFileExist installedVersionFilename
   if e then do
@@ -112,9 +121,9 @@ newVersion = do
 main :: IO ()
 main = do
   initialMsg
-  (nr, cv) <- newVersion
-  if nr then do
-    putStrLn $ "Descargando e instalando release # " ++ (show cv)
+  (nv, cv) <- newVersion
+  if nv then do
+    putStrLn $ "Descargando e instalando release #" ++ (show cv)
     putStrLn "Puede tardar varios minutos (no interrumpa el proceso). Por favor, espere..."
     install cv
     launch
