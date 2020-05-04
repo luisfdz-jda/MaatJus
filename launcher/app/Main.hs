@@ -19,34 +19,34 @@ newtype Version = Version Int
 instance Show Version where
   show (Version v) = show v
 
-haxm :: Version -> FilePath -> FilePath -> IO ()
-haxm (Version v) tempPath appData = do
+haxm :: FilePath -> FilePath -> IO ()
+haxm tempPath appData = do
   putStrLn "Descargando e instalando haxm..."
-  request  <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/haxm.tgz"
+  request  <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_/haxm.tgz"
   download request (tempPath ++ "\\haxm.tgz")
   Tar.unpack tempPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\haxm.tgz")
   shell (T.pack $ concat [tempPath, "\\haxm\\intelhaxm-android.exe -f ", appData, "\\haxm -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1"]) empty
   pure ()
 
-qemu :: Version -> FilePath -> FilePath -> IO ()
-qemu (Version v) tempPath appData = do
+qemu :: FilePath -> FilePath -> IO ()
+qemu tempPath appData = do
   putStrLn "Descargando e instalando qemu..."
-  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu.tgz"
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_/qemu.tgz"
   download  request (tempPath ++ "\\qemu.tgz")
   Tar.unpack appData . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\qemu.tgz")
   pure ()
 
-slax :: Version -> FilePath -> IO ()
-slax (Version v) appData = do
+slax :: FilePath -> IO ()
+slax appData = do
   putStrLn "Descargando slax..."
-  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/slax.iso"
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_/slax.iso"
   download request (appData ++ "\\slax.iso")
   pure ()
 
-quemuLauncher :: Version -> FilePath -> IO ()
-quemuLauncher (Version v) appData = do
+quemuLauncher :: FilePath -> IO ()
+quemuLauncher appData = do
   putStrLn "Instalando qemu_launcher..."
-  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_" ++ show v ++ "/qemu_launcher.bat"
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_/qemu_launcher.bat"
   download request (appData ++ "\\qemu\\qemu_launcher.bat")
   pure ()
 
@@ -76,10 +76,10 @@ install :: Version -> IO ()
 install v = do
   tempPath <- env "TEMP"
   appData <- env "LOCALAPPDATA"
-  haxm v tempPath appData
-  qemu v tempPath appData
-  slax v appData
-  quemuLauncher v appData
+  haxm tempPath appData
+  qemu tempPath appData
+  slax appData
+  quemuLauncher appData
   setInstalledVersion v
 
 launch :: IO ()
@@ -96,7 +96,7 @@ currentVersion :: IO Int
 currentVersion = do
   appData <- env "LOCALAPPDATA"
   let currentVersionFilename = appData ++ "\\maat_current_version.txt"
-  runConduitRes $ httpSource "https://raw.githubusercontent.com/luisfdz-jda/MaatJus/master/version.txt" getResponseBody .| sinkFile currentVersionFilename
+  runConduitRes $ httpSource "https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64/version.txt" getResponseBody .| sinkFile currentVersionFilename
   content <- readFile currentVersionFilename
   pure $ (read content :: Int)
 
