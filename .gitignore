@@ -18,7 +18,7 @@
 !.gitignore
 !MaatJus.png
 !MaatJus.ico
-!uninstall.bat
+!uninstall_maat.bat
 
 # except except for...
 launcher/.stack-work/*

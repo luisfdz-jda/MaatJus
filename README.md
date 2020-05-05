@@ -7,23 +7,20 @@
 ## Descargas
 Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/maat.exe)
 
-## Estructura de ficheros instalados
+## Ficheros instalados
 
-### %HOMEPATH%\AppData\Local\Temp (%TEMP%)
-- haxm.tgz
-- qemu.tgz
-- \haxm
+    %TEMP%\haxm.tgz
+    %TEMP%qemu.tgz
 
-### %HOMEPATH%\AppData\Local (%LOCALAPPDATA%)
-- \haxm
-- \qemu
-- \qemu\qemu_launcher
-- maat_online_version.txt
-- maat_installed_version.txt
-- maat.iso
-- maat.exe
-- maat.ico
+    %LOCALAPPDATA%\haxm
+    %LOCALAPPDATA%\qemu
+    %LOCALAPPDATA%\maat_online_version.txt
+    %LOCALAPPDATA%\maat_installed_version.txt
+    %LOCALAPPDATA%\maat.iso
+    %LOCALAPPDATA%\maat.exe
+    %LOCALAPPDATA%\maat1.exe (cuando haya cambio de version de maat.exe)
+    %USERPROFILE%\Downloads\maat.exe
+    %LOCALAPPDATA%\maat.bat
+    %LOCALAPPDATA%\maat.ico
 
-### %USERPROFILE%\Desktop
-- maat.lnk
-
+    %USERPROFILE%\Desktop\Maat.Jus.lnk
