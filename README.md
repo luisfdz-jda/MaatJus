@@ -5,10 +5,7 @@
 **M**ecanismo **a**ndaluz de **a**cceso al **t**eletrabajo en órganos judiciales y oficinas fiscales
 
 ## Descargas
-Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/maat.exe)
-
-## Descargas
-Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/maat.exe)
+Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.exe)
 
 ## win32 x86_64 release
 
