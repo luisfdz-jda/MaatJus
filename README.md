@@ -18,7 +18,12 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
 - \haxm
 - \qemu
 - \qemu\qemu_launcher
-- maat_current_version.txt
+- maat_online_version.txt
 - maat_installed_version.txt
-- slax.iso
+- maat.iso
+- maat.exe
+- maat.ico
+
+### %USERPROFILE%\Desktop
+- maat.lnk
 
