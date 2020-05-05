@@ -14,7 +14,7 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
 
 [https://github.com/luisfdz-jda/MaatJus/releases/tag/maat_win32_x86_64](https://github.com/luisfdz-jda/MaatJus/releases/tag/maat_win32_x86_64)
 
-### Ficheros instalados 
+### Ficheros creados
 
     %TEMP%\haxm.tgz
     %TEMP%qemu.tgz
@@ -27,8 +27,8 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
     %LOCALAPPDATA%\maat.iso
     %LOCALAPPDATA%\maat.exe
     %LOCALAPPDATA%\maat1.exe (cuando haya cambio de version de maat.exe)
-    %USERPROFILE%\Downloads\maat.exe
     %LOCALAPPDATA%\maat.bat
     %LOCALAPPDATA%\maat.ico
 
+    %USERPROFILE%\Downloads\maat.exe
     %USERPROFILE%\Desktop\Maat.Jus.lnk
