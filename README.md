@@ -7,7 +7,14 @@
 ## Descargas
 Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/maat.exe)
 
-## Ficheros instalados
+## Descargas
+Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/Maat_win32_x86_64_1/maat.exe)
+
+## win32 x86_64 release
+
+[https://github.com/luisfdz-jda/MaatJus/releases/tag/maat_win32_x86_64](https://github.com/luisfdz-jda/MaatJus/releases/tag/maat_win32_x86_64)
+
+### Ficheros instalados 
 
     %TEMP%\haxm.tgz
     %TEMP%qemu.tgz
