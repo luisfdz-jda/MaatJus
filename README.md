@@ -21,6 +21,7 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
 
     %LOCALAPPDATA%\haxm
     %LOCALAPPDATA%\qemu
+    %LOCALAPPDATA%\qemu_launcher.bat
     %LOCALAPPDATA%\maat_online_version.txt
     %LOCALAPPDATA%\maat_installed_version.txt
     %LOCALAPPDATA%\maat.iso
