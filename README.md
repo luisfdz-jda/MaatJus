@@ -7,10 +7,10 @@
 ## Descargas
 Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.exe)
 
-# Cambios de versión
-- Sustiur el fichero de la release correspondiente (nuevo fichero de haxm, qemu o imagen iso) por el fichero con la nueva versión
+# Cambios de versión de una release
+- Editar la release y sustituir el fichero correspondiente por el fichero con la nueva versión (nuevo fichero de haxm, qemu o imagen iso)
 - Cambiar el contenido del fichero version.txt con el número/nombre de la nueva versión
-- La siguiente vez que el usuario ejecute maat.exe se detectará el cambio de versión y se instalará en el equipo local de manera transparente para el usuario
+- La siguiente vez que el usuario ejecute maat.exe se detectará el cambio de versión y se instalaran los cambios en el equipo local de manera transparente para el usuario
 
 ## win32 x86_64 release
 
