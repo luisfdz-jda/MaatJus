@@ -2,9 +2,9 @@ name:                maat
 version:             1.0.0.0
 github:              "githubuser/inst"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2020 Author name here"
+author:              "Luis Fdez / Junta de Andalucia"
+maintainer:          "luis.fernandez.fernandez@juntadeandalucia.es"
+copyright:           "Junta de Andalucia"
 
 extra-source-files:
 - README.md
@@ -26,9 +26,9 @@ library:
   source-dirs: src
 
 executables:
-  maat:
+  maat_win32:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         win32_x86_64
     ghc-options:
     - -threaded
     - -rtsopts
@@ -44,6 +44,26 @@ executables:
     - zlib
     - bytestring
     - directory
+    - clock
+  maat_macos:
+    main:                Main.hs
+    source-dirs:         macos
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - maat
+    - turtle
+    - tar
+    - conduit
+    - http-conduit
+    - http-client
+    - text
+    - zlib
+    - bytestring
+    - directory
+    - clock
 
 tests:
   maat-test:

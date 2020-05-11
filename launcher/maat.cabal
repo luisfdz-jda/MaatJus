@@ -1,19 +1,19 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b102f97a67574b7bfa8d29837fca37db83361f6754e6efb4fbd86f5b8e0fbb7a
+-- hash: e054831cc2ce305bf8c044c097eef800fff7f28a77cf209a93127142fe102116
 
 name:           maat
 version:        1.0.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/inst#readme>
 homepage:       https://github.com/githubuser/inst#readme
 bug-reports:    https://github.com/githubuser/inst/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+author:         Luis Fdez / Junta de Andalucia
+maintainer:     luis.fernandez.fernandez@juntadeandalucia.es
+copyright:      Junta de Andalucia
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -34,16 +34,39 @@ library
       base >=4.7 && <5
   default-language: Haskell2010
 
-executable maat
+executable maat_macos
   main-is: Main.hs
   other-modules:
       Paths_maat
   hs-source-dirs:
-      app
+      macos
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , clock
+    , conduit
+    , directory
+    , http-client
+    , http-conduit
+    , maat
+    , tar
+    , text
+    , turtle
+    , zlib
+  default-language: Haskell2010
+
+executable maat_win32
+  main-is: Main.hs
+  other-modules:
+      Paths_maat
+  hs-source-dirs:
+      win32_x86_64
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , clock
     , conduit
     , directory
     , http-client

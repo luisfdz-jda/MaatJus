@@ -34,3 +34,7 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
 
     %USERPROFILE%\Downloads\maat.exe
     %USERPROFILE%\Desktop\Maat.Jus.lnk
+
+## macOS
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+brew install qemu
