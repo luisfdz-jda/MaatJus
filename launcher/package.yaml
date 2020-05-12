@@ -21,6 +21,18 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- turtle
+- tar
+- conduit
+- http-conduit
+- http-client
+- text
+- zlib
+- bytestring
+- directory
+- clock
+- aeson
+- MissingH
 
 library:
   source-dirs: src
@@ -35,16 +47,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - maat
-    - turtle
-    - tar
-    - conduit
-    - http-conduit
-    - http-client
-    - text
-    - zlib
-    - bytestring
-    - directory
-    - clock
+    
   maat_macos:
     main:                Main.hs
     source-dirs:         macos
@@ -54,16 +57,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - maat
-    - turtle
-    - tar
-    - conduit
-    - http-conduit
-    - http-client
-    - text
-    - zlib
-    - bytestring
-    - directory
-    - clock
 
 tests:
   maat-test:
