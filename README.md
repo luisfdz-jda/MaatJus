@@ -1,6 +1,6 @@
 # [Maat.Jus](https://es.wikipedia.org/wiki/Maat)
 
-**M**ecanismo **a**ndaluz de **a**cceso al **t**eletrabajo en órganos judiciales y oficinas fiscales
+**M**ecanismo **A**ndaluz de **A**cceso al **T**eletrabajo en órganos judiciales y oficinas fiscales
 
 Consejería de Turismo, Regeneración, Justicia y Administración Local
 
