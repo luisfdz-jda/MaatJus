@@ -1,4 +1,4 @@
-![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/maat.gif)
+![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/maat.jpg)
 
 # [Maat Jus](https://es.wikipedia.org/wiki/Maat)
 
@@ -39,3 +39,5 @@ Windows 64 bits: [maat.exe](https://github.com/luisfdz-jda/MaatJus/releases/down
 ## macOS
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 brew install qemu
+
+(imagen de la diosa Maat obtenida de https://i.pinimg.com/736x/61/ed/12/61ed126fab9d564300d0ec1dbf45e62e.jpg)
