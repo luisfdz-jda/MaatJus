@@ -33,6 +33,8 @@ dependencies:
 - clock
 - aeson
 - MissingH
+- ansi-terminal
+- monad-loops
 
 library:
   source-dirs: src

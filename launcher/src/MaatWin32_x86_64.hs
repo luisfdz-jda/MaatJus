@@ -19,6 +19,12 @@ import Data.Aeson.Types as A
 import Data.Bits.Utils (s2w8, w82s)
 import Data.List (intercalate)
 import System.Clock
+import System.Console.ANSI
+import System.IO
+import Numeric
+import Control.Concurrent
+
+import Spinner (spinner)
 
 data Version = Version {
   haxm_tgz :: Int,
@@ -74,44 +80,59 @@ seconds :: TimeSpec -> TimeSpec -> Double
 seconds (TimeSpec s1 n1) (TimeSpec s2 n2) =
   (fromIntegral $ s2 - s1) + ((fromIntegral $n2 - n1) / 1e9)
 
+formatFloatN :: Double -> Int -> String
+formatFloatN floatNum numOfDecimals = showFFloat (Just numOfDecimals) floatNum ""
+
 conditionalInstall :: (Version -> FilePath -> FilePath -> FilePath -> IO ()) ->
                       (Version -> Int) ->
+                      String ->
                       Maybe Version ->
                       Maybe Version ->
                       FilePath ->
                       FilePath ->
                       FilePath ->
                       IO ()
-conditionalInstall _ _ Nothing _ _ _ _ = pure ()
-conditionalInstall f vf (Just ov) Nothing tempPath appData desktopPath = conditionalInstall' f ov tempPath appData desktopPath
-conditionalInstall f vf (Just ov) (Just iv) tempPath appData desktopPath
+conditionalInstall _ _ _ Nothing _ _ _ _ =
+  pure ()
+
+conditionalInstall f vf appName (Just ov) Nothing tempPath appData desktopPath =
+  conditionalInstall' f ov vf appName tempPath appData desktopPath
+
+conditionalInstall f vf appName (Just ov) (Just iv) tempPath appData desktopPath
   | (vf ov) == (vf iv) = pure ()
-  | otherwise = conditionalInstall' f ov tempPath appData desktopPath
+  | otherwise = conditionalInstall' f ov vf appName tempPath appData desktopPath
 
 conditionalInstall' :: (Version -> FilePath -> FilePath -> FilePath -> IO ()) ->
                        Version ->
+                       (Version -> Int) ->
+                       String ->
                        FilePath ->
                        FilePath ->
                        FilePath ->
                        IO ()
-conditionalInstall' f ov tempPath appData desktopPath = do
+conditionalInstall' f ov vf appName tempPath appData desktopPath = do
   t1 <- liftIO $  getTime Monotonic
+  putStr $ "Instalando " ++ appName ++ " v" ++ (show $ vf ov) ++ "... por favor espere (no cierre esta ventana) "
+  hFlush stdout
+  th <- forkIO spinner
   f ov tempPath appData desktopPath
   t2 <- liftIO $  getTime Monotonic
-  putStrLn $ "(" ++ (show $ seconds t1 t2) ++ " segs.)"
+  killThread th
+  setSGR [Reset]
+  cursorBackward 54
+  clearFromCursorToLineEnd
+  putStrLn $ "hecho (" ++ (formatFloatN (seconds t1 t2) 2) ++ "\")"
 
 install_haxm :: Version -> FilePath -> FilePath -> FilePath -> IO ()
-install_haxm ov tempPath appData _ = do
-  putStrLn $ "Instalando haxm v" ++ (show $ haxm_tgz ov) ++ "..."
+install_haxm ov tempPath _ _ = do
   request  <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/haxm.tgz"
   download request (tempPath ++ "\\haxm.tgz")
   Tar.unpack tempPath . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\haxm.tgz")
-  shell (T.pack $ concat [tempPath, "\\haxm\\intelhaxm-android.exe -f ", appData, "\\haxm -a /qn MEMSIZETYPE=1 CUSTOMMEMSIZE=0 NOTCHECKVTENABLE=1"]) empty
+  shell (T.pack $ concat [tempPath, "\\haxm\\silent_install_for_maat.bat -log %temp%\\haxm.log -ld %temp%\\haxm.debug.log"]) empty
   pure ()
 
 install_qemu :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_qemu ov tempPath appData _ = do
-  putStrLn $ "Instalando qemu v" ++ (show $ qemu_tgz ov) ++ "..."
   request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/qemu.tgz"
   download  request (tempPath ++ "\\qemu.tgz")
   Tar.unpack appData . Tar.read . GZip.decompress =<< BS.readFile (tempPath ++ "\\qemu.tgz")
@@ -119,14 +140,12 @@ install_qemu ov tempPath appData _ = do
 
 install_maat_iso :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_maat_iso ov _ appData _ = do
-  putStrLn $ "Instalando maat.iso v" ++ (show $ maat_iso ov) ++ "..."
   request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.iso"
   download request (appData ++ "\\maat.iso")
   pure ()
 
 install_qemu_launcher :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_qemu_launcher ov _ appData _ = do
-  putStrLn $ "Instalando qemu_launcher.bat v" ++ (show $ qemu_launcher_bat ov) ++ "..."
   request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/qemu_launcher.bat"
   download request (appData ++ "\\qemu\\qemu_launcher.bat")
   pure ()
@@ -143,9 +162,17 @@ env variable = do
 
 initialMsg :: Maybe Version -> Maybe Version -> IO ()
 initialMsg ov iv = do
+  setSGR [Reset]
+  setTitle "Maat.Jus - Mecanismo andaluz de acceso al teletrabajo"
+  setSGR [SetColor Foreground Vivid Green]
   putStrLn "Maat.Jus - Mecanismo andaluz de acceso al teletrabajo"
   putStrLn "Consejería de Turismo, Regeneración, Justicia y Administración Local"
+  putStrLn "Junta de Andalucía"
+  setSGR [Reset]
   putStrLn "-"
+  setSGR [SetColor Foreground Dull Yellow]
+  putStrLn "(Build 202005141302)"
+  setSGR [Reset]
   displayVersions ov iv
 
 displayVersions :: Maybe Version -> Maybe Version -> IO ()
@@ -172,31 +199,26 @@ install_maat_exe ov _ appData _ = do
   let maatExeFilename = appData ++ "\\maat.exe"
   fileExists <- doesFileExist maatExeFilename
   let maatExeFilename1 = if fileExists then appData ++ "\\maat1.exe" else maatExeFilename
-  putStrLn $ "Instalando " ++ maatExeFilename1 ++ " v" ++ (show $ maat_ico ov) ++ "..."
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.exe" maatExeFilename1
   pure ()
 
 install_maat_ico :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_maat_ico ov _ appData _ = do
-  putStrLn $ "Instalando maat.ico v" ++ (show $ maat_ico ov) ++ "..."
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.ico" (appData ++ "\\maat.ico")
   pure ()
 
 install_uninstall_maat_bat :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_uninstall_maat_bat ov _ appData _ = do
-  putStrLn $ "Instalando uninstall_maat.bat v" ++ (show $ uninstall_maat_bat ov) ++ "..."
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/uninstall_maat.bat" (appData ++ "\\uninstall_maat.bat")
   pure ()
 
 install_maat_bat :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_maat_bat ov _ appData _ = do
-  putStrLn $ "Instalando maat.bat v" ++ (show $ maat_bat ov) ++ "..."
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/maat.bat" (appData ++ "\\maat.bat")
   pure ()
 
 install_maat_jus_lnk :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_maat_jus_lnk ov _ _ desktopPath = do
-  putStrLn $ "Instalando Maat.Jus.lnk v" ++ (show $ maat_Jus_lnk ov) ++ "..."
   download "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/Maat.Jus.lnk" (desktopPath ++ "\\Maat.Jus.lnk")
   pure ()
 
@@ -240,15 +262,15 @@ install' :: Maybe Version -> Maybe Version -> IO ()
 install' ov iv = do
   putStrLn "-"
   (tempPath, appData, desktopPath) <- paths
-  conditionalInstall install_haxm haxm_tgz ov iv tempPath appData desktopPath
-  conditionalInstall install_maat_exe maat_exe ov iv tempPath appData desktopPath
-  conditionalInstall install_maat_ico maat_ico ov iv tempPath appData desktopPath
-  conditionalInstall install_maat_bat maat_bat ov iv tempPath appData desktopPath
-  conditionalInstall install_maat_jus_lnk maat_Jus_lnk ov iv tempPath appData desktopPath
-  conditionalInstall install_qemu qemu_tgz ov iv tempPath appData desktopPath
-  conditionalInstall install_qemu_launcher qemu_launcher_bat ov iv tempPath appData desktopPath
-  conditionalInstall install_maat_iso maat_iso ov iv tempPath appData desktopPath
-  conditionalInstall install_uninstall_maat_bat uninstall_maat_bat ov iv tempPath appData desktopPath
+  conditionalInstall install_haxm haxm_tgz "haxm.tgz"                                   ov iv tempPath appData desktopPath
+  conditionalInstall install_maat_exe maat_exe "maat.exe"                               ov iv tempPath appData desktopPath
+  conditionalInstall install_maat_ico maat_ico "maat.ico"                               ov iv tempPath appData desktopPath
+  conditionalInstall install_maat_bat maat_bat "maat.bat"                               ov iv tempPath appData desktopPath
+  conditionalInstall install_maat_jus_lnk maat_Jus_lnk "Maat.Jus.lnk"                   ov iv tempPath appData desktopPath
+  conditionalInstall install_qemu qemu_tgz "qemu.tgz"                                   ov iv tempPath appData desktopPath
+  conditionalInstall install_qemu_launcher qemu_launcher_bat "qemu_launcher.bat"        ov iv tempPath appData desktopPath
+  conditionalInstall install_maat_iso maat_iso "maat.iso"                               ov iv tempPath appData desktopPath
+  conditionalInstall install_uninstall_maat_bat uninstall_maat_bat "uninstall_maat.bat" ov iv tempPath appData desktopPath
   updateInstalledVersion ov
 
 install :: IO ()

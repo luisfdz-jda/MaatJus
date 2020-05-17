@@ -1,4 +1,4 @@
-![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/MaatJus.png)
+![alt text](https://github.com/luisfdz-jda/MaatJus/blob/master/maat.gif)
 
 # [Maat Jus](https://es.wikipedia.org/wiki/Maat)
 
