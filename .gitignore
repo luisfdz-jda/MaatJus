@@ -16,8 +16,7 @@
 !LICENSE
 !*.cabal
 !.gitignore
-!MaatJus.png
-!MaatJus.ico
+!maat.gif
 !uninstall_maat.bat
 
 # except except for...
