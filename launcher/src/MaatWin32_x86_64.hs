@@ -112,16 +112,17 @@ conditionalInstall' :: (Version -> FilePath -> FilePath -> FilePath -> IO ()) ->
                        IO ()
 conditionalInstall' f ov vf appName tempPath appData desktopPath = do
   t1 <- liftIO $  getTime Monotonic
-  putStr $ "Instalando " ++ appName ++ " v" ++ (show $ vf ov) ++ "... por favor espere (no cierre esta ventana) "
+  putStr $ "Instalando " ++ appName ++ " v" ++ (show $ vf ov) ++ "... por favor espere (no cierre esta ventana)"
   hFlush stdout
-  th <- forkIO spinner
+  -- th <- forkIO spinner
   f ov tempPath appData desktopPath
   t2 <- liftIO $  getTime Monotonic
-  killThread th
+  -- killThread th
   setSGR [Reset]
-  cursorBackward 54
+  -- cursorBackward 54
+  -- cursorBackward 54
   clearFromCursorToLineEnd
-  putStrLn $ "hecho (" ++ (formatFloatN (seconds t1 t2) 2) ++ "\")"
+  putStrLn $ ", hecho (" ++ (formatFloatN (seconds t1 t2) 2) ++ "\")"
 
 install_haxm :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_haxm ov tempPath _ _ = do
@@ -163,15 +164,15 @@ env variable = do
 initialMsg :: Maybe Version -> Maybe Version -> IO ()
 initialMsg ov iv = do
   setSGR [Reset]
-  setTitle "Maat.Jus - Mecanismo andaluz de acceso al teletrabajo"
+  setTitle "Maat.Jus - Mecanismo Andaluz de Acceso al Teletrabajo"
   setSGR [SetColor Foreground Vivid Green]
-  putStrLn "Maat.Jus - Mecanismo andaluz de acceso al teletrabajo"
+  putStrLn "Maat.Jus - Mecanismo Andaluz de Acceso al Teletrabajo"
   putStrLn "Consejería de Turismo, Regeneración, Justicia y Administración Local"
   putStrLn "Junta de Andalucía"
   setSGR [Reset]
   putStrLn "-"
   setSGR [SetColor Foreground Dull Yellow]
-  putStrLn "(Build 202005141302)"
+  putStrLn "(Build 202005171800)"
   setSGR [Reset]
   displayVersions ov iv
 
