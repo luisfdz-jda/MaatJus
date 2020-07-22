@@ -10,23 +10,16 @@ spinner = iterateM_ (\_ -> spinner') ()
 
 pause :: Int -> IO ()
 pause n = do
-    hFlush stdout
-    threadDelay n
+  hFlush stdout
+  threadDelay n
 
-spinnerStep :: Int -> IO ()
-spinnerStep n = do
-  setSGR [SetColor Foreground Vivid Green]
-  putStr "["
-  putStr $ replicate n '-'
-  setSGR [SetColor Foreground Vivid Red]
-  putStr "o"
-  setSGR [SetColor Foreground Vivid Green]
-  putStr $ replicate (9-n) '-'
-  putStr "]"
+spinnerStep :: Char -> IO ()
+spinnerStep c = do
+  putChar c
   hFlush stdout
   pause 200000
-  cursorBackward 12
+  cursorBackward 1
 
 spinner' :: IO ()
 spinner' = do
-  mapM_ spinnerStep $ [0..9] ++ (reverse [1..8])
+  mapM_ spinnerStep $ ['|', '/', '-', '\\']

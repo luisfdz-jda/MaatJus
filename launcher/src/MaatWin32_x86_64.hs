@@ -112,15 +112,14 @@ conditionalInstall' :: (Version -> FilePath -> FilePath -> FilePath -> IO ()) ->
                        IO ()
 conditionalInstall' f ov vf appName tempPath appData desktopPath = do
   t1 <- liftIO $  getTime Monotonic
-  putStr $ "Instalando " ++ appName ++ " v" ++ (show $ vf ov) ++ "... por favor espere (no cierre esta ventana)"
+  putStr $ "Instalando " ++ appName ++ " v" ++ (show $ vf ov) ++ "... por favor espere (no cierre esta ventana) "
   hFlush stdout
-  -- th <- forkIO spinner
+  th <- forkIO spinner
   f ov tempPath appData desktopPath
   t2 <- liftIO $  getTime Monotonic
-  -- killThread th
+  killThread th
   setSGR [Reset]
-  -- cursorBackward 54
-  -- cursorBackward 54
+  cursorBackward 47
   clearFromCursorToLineEnd
   putStrLn $ ", hecho (" ++ (formatFloatN (seconds t1 t2) 2) ++ "\")"
 
@@ -149,6 +148,8 @@ install_qemu_launcher :: Version -> FilePath -> FilePath -> FilePath -> IO ()
 install_qemu_launcher ov _ appData _ = do
   request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/qemu_launcher.bat"
   download request (appData ++ "\\qemu\\qemu_launcher.bat")
+  request <- parseRequest $ "https://github.com/luisfdz-jda/MaatJus/releases/download/maat_win32_x86_64/qemu_launcher.no_hax.bat"
+  download request (appData ++ "\\qemu\\qemu_launcher.sin_hax.bat")
   pure ()
 
 -- https://stackoverflow.com/questions/40836795/haskell-streaming-download
